@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MVVMDemoDagger2Executor</string>
+    <string name="app_name">MVVMDemoDagger2Reactive</string>
 
     <!--Added-->
     <string name="action_settings">Settings</string>

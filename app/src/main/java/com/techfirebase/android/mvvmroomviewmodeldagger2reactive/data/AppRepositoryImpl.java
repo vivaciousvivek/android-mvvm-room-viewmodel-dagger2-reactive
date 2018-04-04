@@ -1,25 +1,64 @@
 package com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data;
 
-import android.arch.lifecycle.LiveData;
-import android.os.AsyncTask;
-
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.Word;
-import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.AppRoomDatabase;
-import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.db.dao.WordDao;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.db.service.LocalWordService;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.remote.service.RemoteWordService;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.rx.SchedulerProvider;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+
 @Singleton
 public class AppRepositoryImpl implements AppRepository {
-    private final AppRoomDatabase db;
+//    private final AppRoomDatabase db;
+
+    private final LocalWordService localWordService;
+    private final RemoteWordService remoteWordService;
+    private final SchedulerProvider schedulerProvider;
 
     @Inject
+    public AppRepositoryImpl(LocalWordService localWordService, RemoteWordService remoteWordService, SchedulerProvider schedulerProvider) {
+        this.localWordService = localWordService;
+        this.remoteWordService = remoteWordService;
+        this.schedulerProvider = schedulerProvider;
+    }
+
+    @Override
+    public Flowable<List<Word>> getAllWords() {
+        return localWordService.getAllWords();
+    }
+
+    @Override
+    public Completable insert(Word word) {
+        return localWordService.insert(word).andThen(remoteWordService.sync(word));
+    }
+
+    @Override
+    public Completable update(Word word) {
+        return localWordService.update(word).andThen(remoteWordService.sync(word));
+    }
+
+    @Override
+    public Completable delete(Word word) {
+        return localWordService.delete(word).andThen(remoteWordService.sync(word));
+    }
+
+    @Override
+    public Completable deleteAll() {
+        // neet to implement
+//        return localWordService.deleteAll().andThen(remoteWordService.sync(word, api));
+        return null;
+    }
+
+/*@Inject
     public AppRepositoryImpl(AppRoomDatabase db) {
         this.db = db;
-    }
+    }*/
 
     /**
      * Get all words from dao layer, Room executes all queries on a separate thread. Observed LiveData
@@ -27,10 +66,10 @@ public class AppRepositoryImpl implements AppRepository {
      *
      * @return
      */
-    @Override
+    /*@Override
     public LiveData<List<Word>> getAllWords() {
         return db.wordDao().getAllWords();
-    }
+    }*/
 
     /**
      * Room ensures that you don't do any long-running operations on the main thread, blocking the UI.
@@ -38,7 +77,7 @@ public class AppRepositoryImpl implements AppRepository {
      *
      * @param word
      */
-    @Override
+    /*@Override
     public void insert(Word word) {
         new InsertAsyncTask(db.wordDao()).execute(word);
     }
@@ -55,5 +94,5 @@ public class AppRepositoryImpl implements AppRepository {
             wordDaoAsync.insert(words[0]);
             return null;
         }
-    }
+    }*/
 }

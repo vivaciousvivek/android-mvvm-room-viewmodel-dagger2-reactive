@@ -2,16 +2,28 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "df6423fd73525fc5a44e3164be31cdd8",
+    "identityHash": "02b4d5e4e2f3662fbf3996300db318d9",
     "entities": [
       {
         "tableName": "Word",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`word` TEXT NOT NULL, PRIMARY KEY(`word`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`word` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `sync_pending` INTEGER NOT NULL, PRIMARY KEY(`word`))",
         "fields": [
           {
             "fieldPath": "word",
             "columnName": "word",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncPending",
+            "columnName": "sync_pending",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -27,7 +39,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"df6423fd73525fc5a44e3164be31cdd8\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"02b4d5e4e2f3662fbf3996300db318d9\")"
     ]
   }
 }

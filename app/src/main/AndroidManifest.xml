@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.techfirebase.android.mvvmroomviewmodeldagger2reactive">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MvvmApp"
         android:allowBackup="true"
@@ -21,6 +25,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.word.WordActivity"></activity>
+
+        <service
+            android:name=".utils.networking.jobscheduling.SchedulerJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
     </application>
 
 </manifest>

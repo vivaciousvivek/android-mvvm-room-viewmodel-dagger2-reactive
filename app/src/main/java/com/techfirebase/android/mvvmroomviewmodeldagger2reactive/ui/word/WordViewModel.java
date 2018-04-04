@@ -1,13 +1,8 @@
 package com.techfirebase.android.mvvmroomviewmodeldagger2reactive.ui.word;
 
-import android.arch.lifecycle.LiveData;
-
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.AppRepository;
-import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.Word;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.ui.BaseViewModel;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.rx.SchedulerProvider;
-
-import java.util.List;
 
 /**
  * Created by VIVEK KUMAR SINGH on 3/27/2018.
@@ -25,13 +20,13 @@ public class WordViewModel extends BaseViewModel<WordNavigator> {
         this.repository = appRepository;
     }
 
-    public LiveData<List<Word>> getAllWords() {
+    /*public LiveData<List<Word>> getAllWords() {
         return repository.getAllWords();
     }
 
     public void insert(Word word) {
         repository.insert(word);
-    }
+    }*/
 
     //  public LiveData<List<Word>> getAllWords() {
     //    return getCompositeDisposable().add()

@@ -14,18 +14,24 @@ import dagger.android.AndroidInjectionModule;
 
 /**
  * Created by ﻿VIVEK KUMAR SINGH on 3/27/2018.
+ *
  * <p>
+ *
  * <p>AppComponent is responsible for injecting all modules required of our application like
  * AppModule, ActivityModule, etc.
+ *
  * <p>
+ *
  * <p>This class also provides methods that are used to access the dependencies that exist in the
  * dependency graph.
- * <p>
+ *
  * <p>AppComponent is an interface that is implemented by Dagger2 Using @Component
  */
 @Singleton
 @Component(modules = {AndroidInjectionModule.class, AppModule.class, ActivityBuilder.class})
 public interface AppComponent {
+    /* Use AndroidSupportInjectionModule.class if you're using support library */
+
     /**
      * When the dependencies are provided through field injection i.e. @inject on the member
      * variables, we have to tell the Dagger to scan this class through the implementation of this

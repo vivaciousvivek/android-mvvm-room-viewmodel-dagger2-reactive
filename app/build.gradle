@@ -53,6 +53,8 @@ dependencies {
     // Lifecycle components (without ViewModel and LiveData)
     implementation "android.arch.lifecycle:extensions:$rootProject.lifecycle"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.lifecycle"
+    // Reactive Stream support for live data
+    implementation "android.arch.lifecycle:reactivestreams:$rootProject.lifecycle"
 
     // dependency injection
     implementation "com.google.dagger:dagger:$rootProject.dagger2Version"
@@ -63,6 +65,33 @@ dependencies {
     // reactive
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+
+    // retrofit for REST API call
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit"
+//    implementation "com.squareup.retrofit2:retrofit-mock:$rootProject.retrofit"
+
+    // OkHttp Logging Interceptor
+//    implementation "com.squareup.okhttp3:okhttp:$project.okHttpVersion"
+//    implementation "com.squareup.okhttp3:logging-interceptor:$project.okHttpVersion"
+
+    // Google's android Priority Job Queue
+    implementation "com.birbit:android-priority-jobqueue:$project.priorityJobQueueVersion"
+
+    //GCM Network Manager (To make the Google Play services APIs available to your app)
+    implementation "com.google.android.gms:play-services-gcm:$project.playServicesVersion"
+
+    // RxRelay
+    implementation "com.jakewharton.rxrelay2:rxrelay:$project.rxRelayVersion"
+
+    // RxLint
+//    implementation "nl.littlerobots.rxlint:rxlint:$project.rxLintVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
+
+
+
 
     // local unit tests
     testImplementation "junit:junit:$rootProject.junitVersion"

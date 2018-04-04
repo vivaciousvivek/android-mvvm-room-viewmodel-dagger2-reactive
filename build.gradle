@@ -33,7 +33,16 @@ ext {
     dagger2Version = '2.14.1'
     rxjava2Version = '2.1.9'
     rxandroidVersion = '2.0.2'
+    retrofit = '2.4.0'
+//    okHttpVersion = "3.4.1"
     lifecycle = '1.1.0'
+
+    priorityJobQueueVersion = "2.0.1"
+    playServicesVersion = "11.4.2"
+    rxRelayVersion = "2.0.0"
+//    rxLintVersion = "1.6"
+
+    timberVersion = "4.5.1"
 
     // Test dependencies
     junitVersion = '4.12'

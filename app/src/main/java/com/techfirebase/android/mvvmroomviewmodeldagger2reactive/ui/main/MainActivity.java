@@ -36,7 +36,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
-    //  @Inject WordViewModel wordViewModel;
     @Inject
     MainViewModel mainViewModel;
 
@@ -62,7 +61,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public MainViewModel getViewModel() {
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
-        //    mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         return mainViewModel;
     }
 
@@ -82,8 +80,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.onCreate(savedInstanceState);
         activityMainBinding = getViewDataBinding();
         mainViewModel.setNavigator(this);
-
-        //    setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
