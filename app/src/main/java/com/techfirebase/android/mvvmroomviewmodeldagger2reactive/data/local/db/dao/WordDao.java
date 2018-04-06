@@ -21,6 +21,9 @@ public interface WordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Word word);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<Word> item);
+
     @Update
     void update(Word word);
 

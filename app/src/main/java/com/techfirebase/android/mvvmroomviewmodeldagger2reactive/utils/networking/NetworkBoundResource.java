@@ -1,15 +1,17 @@
 package com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.networking;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.api.ApiResponse;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.api.Resource;
-import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.rx.SchedulerProvider;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by VIVEK KUMAR SINGH on 4/2/2018.
@@ -25,24 +27,34 @@ import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.rx.Schedu
  * <p>If the network call completes successfully, it saves the response into the database and
  * re-initializes the stream. If network request fails, we dispatch a failure directly.
  *
- * @param <ResultType>:  Type for the Resource data
- * @param <RequestType>: Type for the API response
+ * @param <LocalType>:  Type for the Resource data
+ * @param <RemoteType>: Type for the API response
  */
-public abstract class NetworkBoundResource<ResultType, RequestType> {
-    private final SchedulerProvider schedulerProvider;
-    private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
+public abstract class NetworkBoundResource<LocalType, RemoteType> {
+//    private final SchedulerProvider schedulerProvider;
+//    private final MediatorLiveData<Resource<LocalType>> result = new MediatorLiveData<>();
 
     @MainThread
-    public NetworkBoundResource(SchedulerProvider schedulerProvider) {
-        this.schedulerProvider = schedulerProvider;
+    public NetworkBoundResource(FlowableEmitter<Resource<LocalType>> emitter) {
+        Disposable firstDataDisposable = loadFromDb()
+                .map(Resource::loading)
+                .subscribe(emitter::onNext);
 
+        createCall()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(remoteTypeData -> {
+                    firstDataDisposable.dispose();
+                    saveCallResult(remoteTypeData);
+                    loadFromDb().map(Resource::success).subscribe(emitter::onNext);
+                });
         /*
          * This method must be called from the main thread. If you need set a value from a background
          * thread, you can use postValue(Object)
          */
-        result.setValue(Resource.loading(null));
+        /*result.setValue(Resource.loading(null));
 
-        LiveData<ResultType> dbSource = loadFromDb();
+        Flowable<LocalType> dbSource = loadFromDb();
         result.addSource(
                 dbSource,
                 data -> {
@@ -53,65 +65,52 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                     } else {
                         result.addSource(dbSource, newData -> setValue(Resource.success(newData)));
                     }
-                });
+                });*/
+    }
+
+    private Single<RemoteType> fetchFromNetwork() {
+        return null;
     }
 
     /**
      * Fetch from network if data is not available in cache(sqllite)
      *
-     * @param dbSource
      */
-    private void fetchFromNetwork(final LiveData<ResultType> dbSource) {
-        // TODO: 4/2/2018 need to check how to do extract data from list of words(response)
-        LiveData<ApiResponse<RequestType>> apiResponse = createCall();
-        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource, newData -> setValue(Resource.loading(newData)));
-        result.addSource(
-                apiResponse,
-                response -> {
-                    result.removeSource(apiResponse);
-                    result.removeSource(dbSource);
-
-                    if (response.isSuccessful()) {
-//            schedulerProvider.getDiskIO().execute(() -> saveCallResult(processResponse(response)));
-//            schedulerProvider
-//                .getMainThread()
-//                .execute(
-//                    () ->
-//                        /**
-//                         * we specially request a new live data, otherwise we'll get immediately
-//                         * last cached value, which may not be updated with latest results received
-//                         * from network.
-//                         */
+//    private void fetchFromNetwork(final LiveData<LocalType> dbSource) {
+//        // TODO: 4/2/2018 need to check how to do extract data from list of words(response)
+//        Single<ApiResponse<RemoteType>> apiResponse = createCall();
+//        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
+//        result.addSource(dbSource, newData -> setValue(Resource.loading(newData)));
+//        result.addSource(
+//                apiResponse,
+//                response -> {
+//                    result.removeSource(apiResponse);
+//                    result.removeSource(dbSource);
+//
+//                    if (response.isSuccessful()) {
+////            schedulerProvider.getDiskIO().execute(() -> saveCallResult(processResponse(response)));
+////            schedulerProvider
+////                .getMainThread()
+////                .execute(
+////                    () ->
+////                        /**
+////                         * we specially request a new live data, otherwise we'll get immediately
+////                         * last cached value, which may not be updated with latest results received
+////                         * from network.
+////                         */
+////                        result.addSource(
+////                            loadFromDb(), newData -> setValue(Resource.success(newData))));
+//                    } else {
+//                        onFetchFailed();
 //                        result.addSource(
-//                            loadFromDb(), newData -> setValue(Resource.success(newData))));
-                    } else {
-                        onFetchFailed();
-                        result.addSource(
-                                dbSource, newData -> setValue(Resource.error(newData, response.errorMessage)));
-                    }
-                });
-    }
-
-    @MainThread
-    private void setValue(Resource<ResultType> newValue) {
-        //    if (!Objects.equals(result.getValue(), newValue))
-        if (result.getValue() != null && newValue != null && !result.getValue().equals(newValue))
-            result.setValue(newValue);
-    }
+//                                dbSource, newData -> setValue(Resource.error(newData, response.errorMessage)));
+//                    }
+//                });
+//    }
 
     @WorkerThread
-    private RequestType processResponse(ApiResponse<RequestType> response) {
+    private RemoteType processResponse(ApiResponse<RemoteType> response) {
         return response.body;
-    }
-
-    /**
-     * returns a LiveData that represents the resource, implemented in the base class.
-     *
-     * @return
-     */
-    public final LiveData<Resource<ResultType>> getAsLiveData() {
-        return result;
     }
 
     /**
@@ -120,16 +119,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
      * @param item
      */
     @WorkerThread
-    protected abstract void saveCallResult(@NonNull RequestType item);
-
-    /**
-     * Called with the data in the database to decide whether it should be fetched from the network.
-     *
-     * @param data
-     * @return
-     */
-    @MainThread
-    protected abstract boolean shouldFetch(@Nullable ResultType data);
+    protected abstract void saveCallResult(@NonNull RemoteType item);
 
     /**
      * Called to get the cached data from the database
@@ -138,7 +128,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
      */
     @NonNull
     @MainThread
-    protected abstract LiveData<ResultType> loadFromDb();
+    protected abstract Flowable<LocalType> loadFromDb();
 
     /**
      * Called to create the API call.
@@ -147,7 +137,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
      */
     @NonNull
     @MainThread
-    protected abstract LiveData<ApiResponse<RequestType>> createCall();
+    protected abstract Single<RemoteType> createCall();
 
     /**
      * Called when the fetch fails. The child class may want to reset components like rate limiter.

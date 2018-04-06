@@ -69,6 +69,7 @@ dependencies {
     // retrofit for REST API call
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit"
 //    implementation "com.squareup.retrofit2:retrofit-mock:$rootProject.retrofit"
 
     // OkHttp Logging Interceptor

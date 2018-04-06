@@ -17,6 +17,8 @@ public interface LocalWordService {
 
     Completable insert(Word word);
 
+    Completable insertAll(List<Word> word);
+
     Completable update(Word word);
 
     Completable delete(Word word);

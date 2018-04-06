@@ -54,6 +54,7 @@ public class AppModule {
                 .baseUrl(AppConstants.BASE_URL.toString())
                 .addConverterFactory(GsonConverterFactory.create())
 //                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build()
                 .create(AppRetrofitApi.class);
 

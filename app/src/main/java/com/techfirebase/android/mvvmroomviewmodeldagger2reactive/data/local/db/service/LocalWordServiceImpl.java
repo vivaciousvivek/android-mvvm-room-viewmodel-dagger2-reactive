@@ -3,6 +3,7 @@ package com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.db.
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.Word;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.AppRoomDatabase;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.local.db.dao.WordDao;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.AppLogger;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class LocalWordServiceImpl implements LocalWordService {
      */
     @Override
     public Flowable<List<Word>> getAllWords() {
-        // TODO: 04/04/18 will use Logging here
+        AppLogger.d("getting all words");
         return wordDao.getAllWords();
     }
 
@@ -52,7 +53,14 @@ public class LocalWordServiceImpl implements LocalWordService {
           wordDao.insert(word);
           return WordSyncUtil.clone(word);
         });*/
+        AppLogger.d("inserting word %s", word);
         return Completable.fromAction(() -> wordDao.insert(word));
+    }
+
+    @Override
+    public Completable insertAll(List<Word> word) {
+        AppLogger.d("inserting all words %s", word);
+        return Completable.fromAction(() -> wordDao.insertAll(word));
     }
 
     /**
@@ -63,7 +71,7 @@ public class LocalWordServiceImpl implements LocalWordService {
      */
     @Override
     public Completable update(Word word) {
-        // TODO: 04/04/18 will use Logging here
+        AppLogger.d("updating word sync status for word string %s", word.getWord());
         return Completable.fromAction(() -> wordDao.update(word));
     }
 
@@ -75,7 +83,7 @@ public class LocalWordServiceImpl implements LocalWordService {
      */
     @Override
     public Completable delete(Word word) {
-        // TODO: 04/04/18 will use Logging here
+        AppLogger.d("deleting word with word string %s", word.getWord());
         return Completable.fromAction(() -> wordDao.delete(word));
     }
 
@@ -86,7 +94,7 @@ public class LocalWordServiceImpl implements LocalWordService {
      */
     @Override
     public Completable deleteAll() {
-        // TODO: 04/04/18 will use Logging here
+        AppLogger.d("deleting all words");
         return Completable.fromAction(() -> wordDao.deleteAll());
     }
 }
