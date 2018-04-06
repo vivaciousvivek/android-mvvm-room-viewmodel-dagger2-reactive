@@ -9,7 +9,9 @@ import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.api
 
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -31,8 +33,6 @@ import io.reactivex.schedulers.Schedulers;
  * @param <RemoteType>: Type for the API response
  */
 public abstract class NetworkBoundResource<LocalType, RemoteType> {
-//    private final SchedulerProvider schedulerProvider;
-//    private final MediatorLiveData<Resource<LocalType>> result = new MediatorLiveData<>();
 
     @MainThread
     public NetworkBoundResource(FlowableEmitter<Resource<LocalType>> emitter) {
@@ -48,65 +48,7 @@ public abstract class NetworkBoundResource<LocalType, RemoteType> {
                     saveCallResult(remoteTypeData);
                     loadFromDb().map(Resource::success).subscribe(emitter::onNext);
                 });
-        /*
-         * This method must be called from the main thread. If you need set a value from a background
-         * thread, you can use postValue(Object)
-         */
-        /*result.setValue(Resource.loading(null));
-
-        Flowable<LocalType> dbSource = loadFromDb();
-        result.addSource(
-                dbSource,
-                data -> {
-                    result.removeSource(dbSource);
-
-                    if (shouldFetch(data)) {
-                        fetchFromNetwork(dbSource);
-                    } else {
-                        result.addSource(dbSource, newData -> setValue(Resource.success(newData)));
-                    }
-                });*/
     }
-
-    private Single<RemoteType> fetchFromNetwork() {
-        return null;
-    }
-
-    /**
-     * Fetch from network if data is not available in cache(sqllite)
-     *
-     */
-//    private void fetchFromNetwork(final LiveData<LocalType> dbSource) {
-//        // TODO: 4/2/2018 need to check how to do extract data from list of words(response)
-//        Single<ApiResponse<RemoteType>> apiResponse = createCall();
-//        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-//        result.addSource(dbSource, newData -> setValue(Resource.loading(newData)));
-//        result.addSource(
-//                apiResponse,
-//                response -> {
-//                    result.removeSource(apiResponse);
-//                    result.removeSource(dbSource);
-//
-//                    if (response.isSuccessful()) {
-////            schedulerProvider.getDiskIO().execute(() -> saveCallResult(processResponse(response)));
-////            schedulerProvider
-////                .getMainThread()
-////                .execute(
-////                    () ->
-////                        /**
-////                         * we specially request a new live data, otherwise we'll get immediately
-////                         * last cached value, which may not be updated with latest results received
-////                         * from network.
-////                         */
-////                        result.addSource(
-////                            loadFromDb(), newData -> setValue(Resource.success(newData))));
-//                    } else {
-//                        onFetchFailed();
-//                        result.addSource(
-//                                dbSource, newData -> setValue(Resource.error(newData, response.errorMessage)));
-//                    }
-//                });
-//    }
 
     @WorkerThread
     private RemoteType processResponse(ApiResponse<RemoteType> response) {

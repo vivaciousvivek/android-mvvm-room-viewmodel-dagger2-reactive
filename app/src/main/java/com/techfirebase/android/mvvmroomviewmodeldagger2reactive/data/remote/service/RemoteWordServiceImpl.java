@@ -12,22 +12,16 @@ import io.reactivex.Completable;
 
 /**
  * Created by VIVEK KUMAR SINGH on 4/4/2018.
+ *
  * <p>
+ *
  * <p>Responsible for syncing data to remote for Word entity
  */
-@Singleton
 public class RemoteWordServiceImpl implements RemoteWordService {
 
-    private final AppRetrofitApi api;
-
-    @Inject
-    public RemoteWordServiceImpl(AppRetrofitApi api) {
-        this.api = api;
-    }
-
-    @Override
-    public Completable sync(Word word) {
-        return Completable.fromAction(
-                () -> JobManagerFactory.getJobManager().addJobInBackground(new SyncWordJob(word, api)));
-    }
+  @Override
+  public Completable sync(Word word) {
+    return Completable.fromAction(
+        () -> JobManagerFactory.getJobManager().addJobInBackground(new SyncWordJob(word)));
+  }
 }

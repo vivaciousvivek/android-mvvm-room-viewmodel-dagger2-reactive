@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.AppRepository;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.api.Resource;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.Word;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.ui.BaseViewModel;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.AppLogger;
@@ -31,14 +32,12 @@ public class MainViewModel extends BaseViewModel<MainNavigator> {
         //            getAllWords();
     }
 
-    //    public LiveData<List<Word>> getAllWords() {
-    //        return repository.getAllWords();
-    //    }
-    //
-    //    public void insert(Word word) {
-    //        repository.insert(word);
-    //    }
-
+    /*public LiveData<Resource<List<Word>>> getAllWords() {
+        return LiveDataReactiveStreams.fromPublisher(getAppRepository()
+                .loadWords()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()));
+    }*/
     /**
      * As live data is required to the main activity so we converted flowable to livedata
      *

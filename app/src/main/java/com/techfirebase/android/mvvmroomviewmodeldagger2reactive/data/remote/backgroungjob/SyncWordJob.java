@@ -9,21 +9,24 @@ import com.birbit.android.jobqueue.RetryConstraint;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.Word;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.entity.WordSyncUtil;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.remote.AppRetrofitApi;
+import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.remote.AppRetrofitApiService;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.AppLogger;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.constant.JobPriority;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.constant.SyncResponse;
 import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.utils.networking.jobscheduling.RemoteException;
 
+import javax.inject.Inject;
+
 public class SyncWordJob extends Job {
 
     private static final String TAG = SyncWordJob.class.getCanonicalName();
     private final Word word;
-    private final AppRetrofitApi api;
+    private final transient AppRetrofitApi api;
 
-    public SyncWordJob(Word word, AppRetrofitApi api) {
+    public SyncWordJob(Word word) {
         super(new Params(JobPriority.MID.getPriority()).requireNetwork().groupBy(TAG).persist());
         this.word = word;
-        this.api = api;
+        api = AppRetrofitApiService.getINSTANCE().getRetrofit().create(AppRetrofitApi.class);
     }
 
     @Override

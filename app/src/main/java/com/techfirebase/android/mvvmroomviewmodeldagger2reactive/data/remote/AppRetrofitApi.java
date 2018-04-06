@@ -4,6 +4,7 @@ import com.techfirebase.android.mvvmroomviewmodeldagger2reactive.data.domain.ent
 
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -16,7 +17,8 @@ import retrofit2.http.POST;
  */
 public interface AppRetrofitApi {
     @GET("word")
-    Call<List<Word>> getAllWords();
+    Single<List<Word>> getAllWords();
+//    Call<List<Word>> getAllWords();
 //  LiveData<ApiResponse<List<Word>>> getAllWords();
 
     @POST("word")

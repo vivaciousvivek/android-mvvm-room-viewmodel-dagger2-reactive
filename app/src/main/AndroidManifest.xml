@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.techfirebase.android.mvvmroomviewmodeldagger2reactive">
 
+    // for detection of app start we have used for background data syncing
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    // for knowing network state like internet is available or not
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    // for internet access
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application

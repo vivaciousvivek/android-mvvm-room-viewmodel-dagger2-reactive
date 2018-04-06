@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -53,7 +54,7 @@ public class AppModule {
         return new Retrofit.Builder()
                 .baseUrl(AppConstants.BASE_URL.toString())
                 .addConverterFactory(GsonConverterFactory.create())
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
 //                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build()
                 .create(AppRetrofitApi.class);
@@ -91,8 +92,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    RemoteWordService provideRemoteWordService(final RemoteWordServiceImpl remoteWordService) {
-        return remoteWordService;
+    RemoteWordService provideRemoteWordService() {
+        return new RemoteWordServiceImpl();
     }
 
     @Provides

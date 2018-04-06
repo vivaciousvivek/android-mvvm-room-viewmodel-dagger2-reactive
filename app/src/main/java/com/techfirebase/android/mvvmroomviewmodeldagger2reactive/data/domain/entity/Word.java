@@ -6,11 +6,13 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Created by VIVEK KUMAR SINGH on 3/24/2018.
  */
 @Entity
-public class Word {
+public class Word implements Serializable{
     @PrimaryKey
     @NonNull
     private String word;
